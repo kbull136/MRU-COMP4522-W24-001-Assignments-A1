@@ -23,7 +23,6 @@ def recovery_script(log:list):  #<--- Your CODE
     data_base[int(id)] = log[-1]
     
     
-
 def transaction_processing(idx:int):
     '''
     1. Process transaction in the transaction queue.
