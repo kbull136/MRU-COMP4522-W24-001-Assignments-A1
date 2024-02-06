@@ -19,12 +19,18 @@ def recovery_script(log:list):  #<--- Your CODE
     print("Recovery in process ...\n")
     pass
 
-def transaction_processing(): #<-- Your CODE
+def transaction_processing(idx:int): #<-- Your CODE
     '''
     1. Process transaction in the transaction queue.
     2. Updates DB_Log accordingly
     3. This function does NOT commit the updates, just execute them
     '''
+    #First store the initial data_base into DB_Log, then if transactions are successful, adds to the DB_Log array
+    #before processing begins in case of failure for recovery
+    #will go through the data_base and find the right item then change the necessary attribute's value
+    #will need a nested for loop or case
+    #header is always at index 0 can be used for case
+
     pass
     
 
@@ -52,6 +58,12 @@ def read_file(file_name:str)->list:
     print(f"\nThere are {size} records in the database, including one header.\n")
     return data
 
+#new code
+def write_file():
+    #this should run after transactions are fully commited to write the updated csv so it doesn't overwrite original
+    newFile = open("Employees_DB_ADV_UPDATED.csv", "w")
+
+
 def is_there_a_failure()->bool:
     '''
     Simulates randomly a failure, returning True or False, accordingly
@@ -73,6 +85,7 @@ def main():
         # Process transaction
         for index in range(number_of_transactions):
             print(f"\nProcessing transaction No. {index+1}.")    #<--- Your CODE (Call function transaction_processing)
+            #transaction_processing(index)
             print("UPDATES have not been committed yet...\n")
             failure = is_there_a_failure()
             if failure:
@@ -87,7 +100,7 @@ def main():
         #Call your recovery script
         recovery_script(DB_Log) ### Call the recovery function to restore DB to sound state
     else:
-        # All transactiones ended up well
+        # All transactions ended up well
         print("All transaction ended up well.")
         print("Updates to the database were committed!\n")
 
