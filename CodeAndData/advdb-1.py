@@ -2,7 +2,6 @@
 
 import random
 import csv
-import sys
 
 data_base = [] # Global binding for the Database contents
 columns = []
@@ -19,7 +18,7 @@ def recovery_script(log:list):  #<--- Your CODE
     Restore the database to stable and sound condition, by processing the DB log.
     '''
     print("Calling your recovery script with DB_Log as an argument.")
-    print("Recovery in process ...\n")
+    print("Recovery in process...\n")
 
     id = log[-1][0]
     data_base[int(id)] = log[-1]
@@ -37,30 +36,27 @@ def transaction_processing(idx:int):
     
     OG_DB = list(data_base[int(idToFind)])
     DB_Log.append(OG_DB)
+    print("\nLog Contents:")
     print(DB_Log)
+    print("\n")
 
-    indexOfColumn = 0
+    indexOfHeader = 0
     
+    #finds the header that needs to have its value changed
     for header in columns:
         if(transactions[idx][1] == header):
-            indexOfColumn = columns.index(header)
+            indexOfHeader = columns.index(header)
     
     valToChange = transactions[idx][2]
     
-
+    #Finds the row in the database using the unique id and changes the value according to the header
     for row in data_base:
-        
-        # we have to assume that the ID is the first column. Otherwise we can find it but who has time for that
         if(row[0] == idToFind):
-            row[indexOfColumn] = valToChange
+            row[indexOfHeader] = valToChange
             break  
-        
-    #print(data_base)
 
-    
-#new code
 def write_file():
-    #this should run after transactions are fully commited to write the updated csv so it doesn't overwrite original
+    #Writes the updated database into a new .csv file separate from the original
 
     with open("Employees_DB_ADV_UPDATED.csv", "w", newline='') as file:
         csv.writer(file, delimiter=',').writerows(data_base)
@@ -116,7 +112,7 @@ def main():
     while not failure:
         # Process transaction
         for index in range(number_of_transactions):
-            print(f"\nProcessing transaction No. {index+1}.")    #<--- Your CODE (Call function transaction_processing)
+            print(f"\nProcessing transaction No. {index+1}...")    #<--- Your CODE (Call function transaction_processing)
             transaction_processing(index)
             print("UPDATES have not been committed yet...\n")
             failure = is_there_a_failure()
