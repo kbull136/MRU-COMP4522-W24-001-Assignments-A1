@@ -1,6 +1,8 @@
 # Adv DB Winter 2024 - 1
 
 import random
+import csv
+import sys
 
 data_base = [] # Global binding for the Database contents
 columns = []
@@ -59,7 +61,9 @@ def transaction_processing(idx:int):
 #new code
 def write_file():
     #this should run after transactions are fully commited to write the updated csv so it doesn't overwrite original
-    newFile = open("Employees_DB_ADV_UPDATED.csv", "w")
+
+    with open("Employees_DB_ADV_UPDATED.csv", "w", newline='') as file:
+        csv.writer(file, delimiter=',').writerows(data_base)
 
 
 def read_file(file_name:str)->list:
@@ -136,6 +140,8 @@ def main():
     print('The data entries AFTER updates -and RECOVERY, if necessary- are presented below:')
     for item in data_base:
         print(item)
+    
+    write_file()
     
 main()
 
