@@ -4,26 +4,28 @@ import random
 import csv
 
 data_base = [] # Global binding for the Database contents
-columns = []
+columns = [] #Global variable for
 '''
 transactions = [['id1',' attribute2', 'value1'], ['id2',' attribute2', 'value2'],
                 ['id3', 'attribute3', 'value3']]
 '''
 transactions = [['1', 'Department', 'Music'], ['5', 'Civil_status', 'Divorced'],
                 ['15', 'Salary', '200000']]
-DB_Log = [] # <-- You WILL populate this as you go
+DB_Log = [] # Global variable to store for logging
 
-def recovery_script(log:list):  #<--- Your CODE
+def recovery_script(log:list):  
     '''
-    Restore the database to stable and sound condition, by processing the DB log.
+    Restore the database to stable and sound condition, by processing the DB_Log.
     '''
-    print("Calling your recovery script with DB_Log as an argument.")
+    print("Calling recovery script to rollback to last stable version.")
     print("Recovery in process...\n")
 
     id = log[-1][0]
     data_base[int(id)] = log[-1]
+
+    print('Recovery complete.')
     
-    
+
 def transaction_processing(idx:int):
     '''
     1. Process transaction in the transaction queue.
@@ -37,7 +39,9 @@ def transaction_processing(idx:int):
     OG_DB = list(data_base[int(idToFind)])
     DB_Log.append(OG_DB)
     print("\nLog Contents:")
-    print(DB_Log)
+
+    for item in DB_Log:
+        print(item)
     print("\n")
 
     indexOfHeader = 0
@@ -56,8 +60,10 @@ def transaction_processing(idx:int):
             break  
 
 def write_file():
-    #Writes the updated database into a new .csv file separate from the original
+    '''
 
+    Writes the updated database into a new .csv file separate from the original
+    '''
     with open("Employees_DB_ADV_UPDATED.csv", "w", newline='') as file:
         csv.writer(file, delimiter=',').writerows(data_base)
 
@@ -83,7 +89,7 @@ def read_file(file_name:str)->list:
     print('The data entries BEFORE updates are presented below:')
     for item in data:
         print(item)
-    print(f"\nThere are {size} records in the database, including one header.\n")
+    print(f"\nThere are {size} records in the database, including one header.")
     return data
 
 def is_there_a_failure()->bool:
@@ -98,6 +104,10 @@ def is_there_a_failure()->bool:
     return result
 
 def grabColumns():
+    '''
+    
+    Grabs the column headers from the database and store it in a global variable
+    '''
     global columns
     columns = data_base[0]
 
@@ -112,28 +122,29 @@ def main():
     while not failure:
         # Process transaction
         for index in range(number_of_transactions):
-            print(f"\nProcessing transaction No. {index+1}...")    #<--- Your CODE (Call function transaction_processing)
-            transaction_processing(index)
+            print(f"\nProcessing transaction No. {index+1}...")
+            transaction_processing(index) #transaction process function
             print("UPDATES have not been committed yet...\n")
             failure = is_there_a_failure()
             if failure:
                 must_recover = True
                 failing_transaction_index = index + 1
-                print(f'There was a failure whilst processing transaction No. {failing_transaction_index}.')
+                print(f'There was a failure whilst processing transaction No. {failing_transaction_index}.\n')
                 break
             else:
+                print('Transaction success!')
                 print(f'Transaction No. {index+1} has been commited! Changes are permanent.')
+        break
                 
     if must_recover:
         #Call your recovery script
         recovery_script(DB_Log) ### Call the recovery function to restore DB to sound state
     else:
         # All transactions ended up well
-        #where the write file would go for output 
         print("All transaction ended up well.")
         print("Updates to the database were committed!\n")
 
-    print('The data entries AFTER updates -and RECOVERY, if necessary- are presented below:')
+    print('\nThe data entries AFTER updates -and RECOVERY, if necessary- are presented below:')
     for item in data_base:
         print(item)
     
